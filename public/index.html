@@ -160,4 +160,83 @@
         }
     }
 
+    function isi(id, nilai) {
+        const el = $(id);
+        el.textContent = nilai;
+        el.classList.toggle("kosong", nilai === "-");
+    }
+
+    function setStatus(pesan, error = false) {
+        status.textContent = pesan;
+        status.classList.toggle("error", error);
+    }
+
+    function tampilkan(data) {
+        isi("hasil-lokasi", data.lokasi);
+        isi("negara", data.negara);
+        isi("provinsi", data.provinsi);
+        isi("kecamatan", data.kecamatan);
+        isi("longitude", data.longitude.toFixed(6));
+        isi("latitude", data.latitude.toFixed(6));
+        $("in-lon").value = data.longitude.toFixed(6);
+        $("in-lat").value = data.latitude.toFixed(6);
+
+        const entri = Object.entries(data.detail);
+        $("detail").innerHTML = entri.length
+            ? entri.map(() => "<div></div>").join("")
+            : "Tidak ada data.";
+        [...$("detail").children].forEach((div, i) => {
+            div.textContent = `${entri[i][0]}: `;
+            const s = document.createElement("span");
+            s.textContent = entri[i][1];
+            div.appendChild(s);
+        });
+
+        // Pin dan peta berpindah ke titik yang dipilih
+        taruhPin(data.latitude, data.longitude);
+        map.flyTo([data.latitude, data.longitude], Math.max(map.getZoom(), 10), { duration: 1.2 });
+    }
+
+    async function ambil(url, pesanMuat) {
+        const id = ++permintaanTerakhir; // abaikan respons lama jika ada klik baru
+        setStatus(pesanMuat);
+        $("map").classList.add("memuat");
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (id !== permintaanTerakhir) return;
+            if (!response.ok) throw new Error(data.message || "Terjadi kesalahan");
+            tampilkan(data);
+            setStatus("Lokasi ditemukan.");
+        } catch (error) {
+            if (id !== permintaanTerakhir) return;
+            console.error(error);
+            setStatus(error.message, true);
+        } finally {
+            if (id === permintaanTerakhir) $("map").classList.remove("memuat");
+        }
+    }
+
+    // 1) Cari berdasarkan nama tempat
+    $("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const q = $("lokasi").value.trim();
+        if (q) ambil(`/api/lokasi?q=${encodeURIComponent(q)}`, "Mencari lokasi...");
+    });
+
+    // 2) Pindah ke titik koordinat yang diketik
+    $("form-koordinat").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const lon = $("in-lon").value, lat = $("in-lat").value;
+        ambil(`/api/koordinat?lon=${encodeURIComponent(lon)}&lat=${encodeURIComponent(lat)}`, "Mengambil data titik...");
+    });
+
+    // 3) Klik di peta
+    map.on("click", (e) => {
+        const { lat, lng } = e.latlng.wrap();
+        taruhPin(lat, lng); // pin langsung pindah, keterangan menyusul
+        ambil(`/api/koordinat?lon=${lng}&lat=${lat}`, "Mengambil data titik...");
+    });
+</script>
+</body>
 </html>
