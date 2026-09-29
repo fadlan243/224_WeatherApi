@@ -92,5 +92,39 @@
         .leaflet-container { background: var(--sea); font-family: inherit; }
     </style>
 </head>
+<body>
+<main class="wrap">
+    <p class="identitas"><b>Fadlan Nasrizal Parma</b> &nbsp;|&nbsp; NIM 20240140224</p>
 
+    <h1>Di mana tempat itu berada?</h1>
+
+    <div class="grid">
+        <section>
+            <form id="form">
+                <input id="lokasi" type="text" placeholder="Cari nama tempat, mis. Kasihan, Bantul" autocomplete="off" required>
+                <button id="tombol" type="submit">Cari</button>
+            </form>
+
+            <form id="form-koordinat">
+                <input id="in-lon" type="number" step="any" placeholder="Longitude" aria-label="Longitude" required>
+                <input id="in-lat" type="number" step="any" placeholder="Latitude" aria-label="Latitude" required>
+                <button type="submit">Ke titik</button>
+            </form>
+
+            <p id="status" class="status" role="status">Cari nama tempat, isi koordinat, atau klik langsung di peta.</p>
+
+            <dl>
+                <div class="baris"><dt>Lokasi</dt><dd id="hasil-lokasi" class="kosong">-</dd></div>
+                <div class="baris"><dt>Negara</dt><dd id="negara" class="kosong">-</dd></div>
+                <div class="baris"><dt>Provinsi</dt><dd id="provinsi" class="kosong">-</dd></div>
+                <div class="baris"><dt>Kecamatan</dt><dd id="kecamatan" class="kosong">-</dd></div>
+                <div class="baris"><dt>Longitude</dt><dd id="longitude" class="kosong">-</dd></div>
+                <div class="baris"><dt>Latitude</dt><dd id="latitude" class="kosong">-</dd></div>
+            </dl>
+
+            <details>
+                <summary>Semua tingkat wilayah di titik ini</summary>
+                <div id="detail">Belum ada data.</div>
+            </details>
+        
 </html>
