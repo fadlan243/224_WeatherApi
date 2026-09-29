@@ -126,5 +126,38 @@
                 <summary>Semua tingkat wilayah di titik ini</summary>
                 <div id="detail">Belum ada data.</div>
             </details>
-        
+        </section>
+
+        <section class="peta-box">
+            <div id="map" aria-label="Peta interaktif, klik untuk memilih titik"></div>
+            <p class="petunjuk">Klik titik mana pun di peta, keterangan tempat akan ikut berubah.</p>
+        </section>
+    </div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const $ = (id) => document.getElementById(id);
+    const status = $("status");
+    let marker = null;
+    let permintaanTerakhir = 0;
+
+    // Peta: tile diambil lewat server (/tiles) agar API key tidak terlihat di browser
+    const map = L.map("map", { worldCopyJump: true }).setView([-2.5, 118], 4);
+    L.tileLayer("/tiles/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution: "&copy; MapTiler &copy; OpenStreetMap contributors",
+    }).addTo(map);
+
+    function taruhPin(lat, lon) {
+        if (!marker) {
+            marker = L.circleMarker([lat, lon], {
+                radius: 9, color: "#0b1f26", weight: 3,
+                fillColor: "#ffc93c", fillOpacity: 1,
+            }).addTo(map);
+        } else {
+            marker.setLatLng([lat, lon]);
+        }
+    }
+
 </html>
