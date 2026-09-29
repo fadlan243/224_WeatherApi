@@ -8,51 +8,89 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0b1f26;
+            --sea: #123a44;
+            --line: #2a5a66;
+            --mist: #9fc5c9;
+            --paper: #f2ebdd;
+            --signal: #ffc93c;
+            --danger: #ff8a7a;
+        }
+        * { box-sizing: border-box; margin: 0; }
+        body {
+            min-height: 100vh;
+            background: var(--ink);
+            color: var(--paper);
+            font-family: "Bricolage Grotesque", system-ui, sans-serif;
+            padding: 32px 20px 48px;
+        }
+        .wrap { max-width: 1100px; margin: 0 auto; }
+        .identitas { color: var(--mist); font-size: .9rem; margin-bottom: 28px; }
+        .identitas b { color: var(--paper); font-weight: 600; }
+
+        h1 {
+            font-size: clamp(2.2rem, 6vw, 4.2rem);
+            font-weight: 800;
+            line-height: .95;
+            letter-spacing: -.03em;
+            margin-bottom: 24px;
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 28px; align-items: start; }
+        @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+        form { display: flex; gap: 8px; margin-bottom: 12px; }
+        input {
+            flex: 1; min-width: 0;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 2px solid var(--line);
+            background: var(--sea);
+            color: var(--paper);
+            font: inherit; font-size: 1rem;
+        }
+        input::placeholder { color: var(--mist); opacity: .7; }
+        input:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+        button {
+            padding: 0 20px;
+            border: 0; border-radius: 10px;
+            background: var(--signal); color: var(--ink);
+            font: inherit; font-weight: 800; cursor: pointer;
+        }
+        button:disabled { opacity: .6; cursor: wait; }
+        #form-koordinat button { background: transparent; color: var(--signal); border: 2px solid var(--signal); }
+
+        .status { min-height: 1.4em; margin: 6px 0 14px; color: var(--mist); }
+        .status.error { color: var(--danger); }
+
+        dl { border-top: 1px solid var(--line); }
+        .baris {
+            display: grid; grid-template-columns: 110px 1fr;
+            gap: 12px; padding: 12px 0;
+            border-bottom: 1px solid var(--line);
+        }
+        dt { color: var(--mist); }
+        dd { font-size: 1.2rem; font-weight: 600; word-break: break-word; }
+        dd.kosong { color: var(--line); font-weight: 400; }
+
+        details { margin-top: 16px; color: var(--mist); }
+        summary { cursor: pointer; }
+        #detail { margin-top: 8px; font-size: .9rem; line-height: 1.6; }
+        #detail span { color: var(--paper); }
+
+        .peta-box { position: sticky; top: 16px; }
+        #map {
+            height: 520px;
+            border-radius: 14px;
+            border: 2px solid var(--line);
+            cursor: crosshair;
+        }
+        #map.memuat { opacity: .85; }
+        .petunjuk { margin-top: 10px; color: var(--mist); font-size: .9rem; }
+        .leaflet-container { background: var(--sea); font-family: inherit; }
+    </style>
 </head>
-<body>
-<main class="wrap">
-    <p class="identitas"><b>Fadlan Nasrizal Parma</b> &nbsp;|&nbsp; NIM 20240140224</p>
 
-    <h1>Di mana tempat itu berada?</h1>
-
-    <div class="grid">
-        <section>
-            <form id="form">
-                <input id="lokasi" type="text" placeholder="Cari nama tempat, mis. Kasihan, Bantul" autocomplete="off" required>
-                <button id="tombol" type="submit">Cari</button>
-            </form>
-
-            <form id="form-koordinat">
-                <input id="in-lon" type="number" step="any" placeholder="Longitude" aria-label="Longitude" required>
-                <input id="in-lat" type="number" step="any" placeholder="Latitude" aria-label="Latitude" required>
-                <button type="submit">Ke titik</button>
-            </form>
-
-            <p id="status" class="status" role="status">Cari nama tempat, isi koordinat, atau klik langsung di peta.</p>
-
-            <dl>
-                <div class="baris"><dt>Lokasi</dt><dd id="hasil-lokasi" class="kosong">-</dd></div>
-                <div class="baris"><dt>Negara</dt><dd id="negara" class="kosong">-</dd></div>
-                <div class="baris"><dt>Provinsi</dt><dd id="provinsi" class="kosong">-</dd></div>
-                <div class="baris"><dt>Kecamatan</dt><dd id="kecamatan" class="kosong">-</dd></div>
-                <div class="baris"><dt>Longitude</dt><dd id="longitude" class="kosong">-</dd></div>
-                <div class="baris"><dt>Latitude</dt><dd id="latitude" class="kosong">-</dd></div>
-            </dl>
-
-            <details>
-                <summary>Semua tingkat wilayah di titik ini</summary>
-                <div id="detail">Belum ada data.</div>
-            </details>
-        </section>
-
-        <section class="peta-box">
-            <div id="map" aria-label="Peta interaktif, klik untuk memilih titik"></div>
-            <p class="petunjuk">Klik titik mana pun di peta, keterangan tempat akan ikut berubah.</p>
-        </section>
-    </div>
-</main>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-</body>
 </html>
